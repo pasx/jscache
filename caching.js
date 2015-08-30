@@ -17,10 +17,10 @@ utils.caching = (function() {
 			var i = 0;
 
 			var _crunch = function(force){
-				if(!force && i<=this.max/2) {i++; return;} //no attempt to crunch unless index reaches max/2
+				if(!force && i<this.max/2) {i++; return;} //no attempt to crunch unless at least max/2 additions to cache
 				i=0;
 				var l = this.cache.length;
-				if(l<=this.max) {return;}
+				if(l<this.max) {return;}
 				var sliceFrom = l - this.max;
 				this.cache = this.cache.slice(sliceFrom);
 			};
@@ -52,6 +52,7 @@ utils.caching = (function() {
 					return false;
 				}
 				this.cache.push(new utils.caching.CachedData(key, data));
+				_crunch.call(this);
 				return true;
 			};
 
@@ -60,7 +61,7 @@ utils.caching = (function() {
 			};
 
 			this.crunch= function(){
-				_crunch(true);
+				_crunch.call(this,true);
 			};
 
 		},
